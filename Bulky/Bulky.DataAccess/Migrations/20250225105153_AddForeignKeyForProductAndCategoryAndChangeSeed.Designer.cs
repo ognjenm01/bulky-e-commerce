@@ -3,16 +3,19 @@ using Bulky.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BulkyWeb.Migrations
+namespace Bulky.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250225105153_AddForeignKeyForProductAndCategoryAndChangeSeed")]
+    partial class AddForeignKeyForProductAndCategoryAndChangeSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,10 +100,6 @@ namespace BulkyWeb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("ListPrice")
                         .HasColumnType("float");
 
@@ -131,7 +130,6 @@ namespace BulkyWeb.Migrations
                             CategoryId = 4,
                             Description = "A dystopian masterpiece, this is the powerful and prophetic novel that defined the twentieth century.",
                             ISBN = "9781784876555",
-                            ImageUrl = "https://ih1.redbubble.net/image.3627578336.5377/flat,750x,075,f-pad,750x1000,f8f8f8.jpg",
                             ListPrice = 100.0,
                             Price = 100.0,
                             Price100 = 50.0,
@@ -145,7 +143,6 @@ namespace BulkyWeb.Migrations
                             CategoryId = 4,
                             Description = "The astonishing novel Brave New World, originally published in 1932, presents Aldous Huxley's vision of the future",
                             ISBN = "9780060120351",
-                            ImageUrl = "https://www.redmolotov.com/image/cache/catalog/books/brave-new-world-book_design-1000x1000.jpg",
                             ListPrice = 120.0,
                             Price = 120.0,
                             Price100 = 80.0,
@@ -159,7 +156,6 @@ namespace BulkyWeb.Migrations
                             CategoryId = 5,
                             Description = "Can an entire city be haunted? The Losers’ Club of 1958 seems to think so.",
                             ISBN = "9781501156687",
-                            ImageUrl = "https://m.media-amazon.com/images/I/71KWpItR2kL.jpg",
                             ListPrice = 130.0,
                             Price = 130.0,
                             Price100 = 95.0,
