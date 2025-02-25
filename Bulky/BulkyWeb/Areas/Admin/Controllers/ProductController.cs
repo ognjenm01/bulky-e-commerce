@@ -20,7 +20,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Product> products = _unitOfWork.ProductRepository.GetAll().ToList();
+            List<Product> products = _unitOfWork.ProductRepository.GetAll(includeProeprties:"Category").ToList();
             
             return View(products);
         }
@@ -97,45 +97,38 @@ namespace BulkyWeb.Areas.Admin.Controllers
             }
         }
 
-        public IActionResult Delete(int? id)
-        {
-            if (id == null || id <= 0)
-            {
-                return NotFound();
-            }
+        #region API CALLS
 
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            List<Product> products = _unitOfWork.ProductRepository.GetAll(includeProeprties: "Category").ToList();
+            return Json(new { data = products });
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
             Product? product = _unitOfWork.ProductRepository.Get(p => p.Id == id);
-
-            if (product == null)
+            if(product == null) 
             {
-                return NotFound();
+                return Json(new {success = false, message = "Error while deleting"}); 
             }
 
-            ProductVM productVM = new()
-            {
-                CategoryList = _unitOfWork.CategoryRepository.GetAll().Select(c => new SelectListItem
-                {
-                    Text = c.Name,
-                    Value = c.Id.ToString()
-                }),
-                Product = product
-            };
+            string oldImg = Path.Combine(_webHostEnvironment.WebRootPath, 
+                product.ImageUrl.TrimStart('\\'));
 
-            return View(productVM);
-        }
-
-        [HttpPost]
-        public IActionResult Delete(ProductVM productVM)
-        {
-            if (ModelState.IsValid)
+            if (System.IO.File.Exists(oldImg))
             {
-                _unitOfWork.ProductRepository.Remove(productVM.Product);
-                _unitOfWork.Save();
-                TempData["success"] = "Successfully deleted product";
-                return RedirectToAction("Index");
+                System.IO.File.Delete(oldImg);
             }
 
-            return View(productVM);
+            _unitOfWork.ProductRepository.Remove(product);
+            _unitOfWork.Save();
+
+            return Json(new { success = true, message = "Delete successful" });
         }
+
+        #endregion
     }
 }
