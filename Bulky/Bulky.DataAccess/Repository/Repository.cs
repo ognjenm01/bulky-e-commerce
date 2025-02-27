@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Bulky.DataAccess.Repository
 {
@@ -25,9 +26,13 @@ namespace Bulky.DataAccess.Repository
             dbSet.Add(entity);
         }
 
-        public T? Get(Expression<Func<T, bool>> filter, string? includeProeprties = null)
+        public T? Get(Expression<Func<T, bool>> filter, string? includeProeprties = null, bool tracked = false)
         {
             IQueryable<T> query = dbSet;
+            
+            if (!tracked)
+                query = dbSet.AsNoTracking();
+
             query = query.Where(filter);
 
             if (!string.IsNullOrEmpty(includeProeprties))
